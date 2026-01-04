@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datannotix | Precision Data Labeling</title>
+    <style>
+        /* --- 1. GENERAL STYLES & RESET --- */
+        :root {
+            --black: #0a0a0a;
+            --dark-grey: #1f1f1f;
+            --mid-grey: #808080;
+            --light-grey: #e5e5e5;
+            --white: #ffffff;
+            
+            --nav-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--black);
+            background-color: var(--black); /* Default to dark for galaxy feel */
+            overflow-x: hidden;
+        }
+
+        /* --- 2. GALAXY ANIMATION BACKGROUNDS --- */
+        /* This creates a scrolling starfield using pure CSS box-shadows */
+        .galaxy-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .stars {
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            box-shadow: 100px 200px #fff, 300px 400px #fff, 500px 100px #fff, 
+                        700px 800px #fff, 100px 900px #fff, 400px 200px #fff,
+                        800px 500px #fff, 200px 50px #fff, 600px 300px #fff;
+            animation: animStar 50s linear infinite;
+        }
+
+        .stars:after {
+            content: " ";
+            position: absolute;
+            top: 2000px;
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            box-shadow: 100px 200px #fff, 300px 400px #fff, 500px 100px #fff, 
+                        700px 800px #fff, 100px 900px #fff, 400px 200px #fff,
+                        800px 500px #fff, 200px 50px #fff, 600px 300px #fff;
+        }
+
+        .stars2 {
+            width: 2px;
+            height: 2px;
+            background: transparent;
+            box-shadow: 150px 250px #aaa, 350px 450px #aaa, 550px 150px #aaa,
+                        750px 850px #aaa, 150px 950px #aaa, 450px 250px #aaa;
+            animation: animStar 100s linear infinite;
+        }
+        
+        .stars2:after {
+            content: " ";
+            position: absolute;
+            top: 2000px;
+            width: 2px;
+            height: 2px;
+            background: transparent;
+            box-shadow: 150px 250px #aaa, 350px 450px #aaa, 550px 150px #aaa,
+                        750px 850px #aaa, 150px 950px #aaa, 450px 250px #aaa;
+        }
+
+        @keyframes animStar {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-2000px); }
+        }
+
+        /* --- 3. HEADER (GLASSY) --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: rgba(10, 10, 10, 0.7); /* Dark Glass */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .logo span { color: var(--mid-grey); }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--mid-grey);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--white);
+        }
+
+        nav a.active {
+            font-weight: 600;
+            border-bottom: 1px solid var(--white);
+            padding-bottom: 5px;
+        }
+
+        /* --- 4. SECTIONS LAYOUT --- */
+        section {
+            min-height: 100vh;
+            padding: 120px 5% 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            scroll-margin-top: var(--nav-height); 
+        }
+
+        h1, h2 {
+            font-weight: 300;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: var(--mid-grey);
+            margin: 15px auto 0;
+        }
+
+        p {
+            max-width: 700px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        /* --- 5. BUTTONS (WATER/CLASSY) --- */
+        .btn {
+            position: relative;
+            padding: 18px 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- 6. HOME SECTION (Dark) --- */
+        #home {
+            background: radial-gradient(circle at bottom, #1a1a1a 0%, #000000 100%);
+            color: var(--white);
+        }
+
+        #home h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        #home p { color: var(--mid-grey); }
+
+        /* --- 7. ABOUT SECTION (Light) --- */
+        #about {
+            background-color: var(--white);
+            color: var(--black);
+        }
+        #about h2 { color: var(--black); }
+        #about p { color: var(--mid-grey); }
+
+        /* --- 8. SERVICES SECTION (Light Grey + Animations) --- */
+        #services {
+            background-color: #f7f7f7;
+            color: var(--black);
+        }
+        #services h2 { color: var(--black); }
+        #services p { color: #666; }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 4px; /* Minimalist sharp corners */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .anim-box {
+            height: 100px;
+            width: 100%;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .card p {
+            text-align: left;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* --- SERVICE SPECIFIC ANIMATIONS --- */
+
+        /* 1. CV: Bounding Box Scan */
+        .cv-box {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--black);
+            position: relative;
+            animation: scanMove 4s ease-in-out infinite;
+        }
+        .cv-box::after {
+            content: "car";
+            position: absolute;
+            top: -15px;
+            left: 0;
+            background: var(--black);
+            color: var(--white);
+            font-size: 10px;
+            padding: 2px 4px;
+        }
+        @keyframes scanMove {
+            0% { width: 50px; height: 50px; transform: translate(-20px, -10px); }
+            50% { width: 70px; height: 40px; transform: translate(10px, 10px); }
+            100% { width: 50px; height: 50px; transform: translate(-20px, -10px); }
+        }
+
+        /* 2. NLP: Typing Text */
+        .nlp-text {
+            font-family: monospace;
+            font-size: 14px;
+            border-right: 2px solid var(--black);
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 3s steps(20, end) infinite;
+        }
+        @keyframes typing {
+            0% { width: 0; }
+            70% { width: 140px; } /* Adjust based on text length */
+            90% { width: 140px; }
+            100% { width: 0; }
+        }
+
+        /* 3. Audio: Waveform */
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 40px;
+        }
+        .bar {
+            width: 4px;
+            background: var(--black);
+            animation: wave 1s ease-in-out infinite;
+        }
+        .bar:nth-child(1) { height: 20%; animation-delay: 0.0s; }
+        .bar:nth-child(2) { height: 50%; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 90%; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 60%; animation-delay: 0.3s; }
+        .bar:nth-child(5) { height: 30%; animation-delay: 0.4s; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.3); }
+        }
+
+        /* 4. LiDAR: 3D Rotate */
+        .lidar-ring {
+            width: 60px;
+            height: 60px;
+            border: 2px dotted var(--mid-grey);
+            border-radius: 50%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate3d 6s linear infinite;
+        }
+        .lidar-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotateX(90deg);
+            width: 40px; height: 40px;
+            border: 2px dashed var(--black);
+            border-radius: 50%;
+        }
+        @keyframes rotate3d {
+            0% { transform: rotateX(60deg) rotateZ(0deg); }
+            100% { transform: rotateX(60deg) rotateZ(360deg); }
+        }
+
+        /* --- 9. PROCESS SECTION (Light) --- */
+        #process {
+            background-color: var(--white);
+            color: var(--black);
+        }
+        #process h2 { color: var(--black); }
+        
+        .steps-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 60px;
+            width: 100%;
+            max-width: 1000px;
+        }
+        .step { flex: 1; min-width: 200px; text-align: center; }
+        .step-number {
+            font-size: 3rem;
+            font-weight: 100;
+            color: var(--light-grey);
+            margin-bottom: 10px;
+        }
+        .step h3 { font-size: 1.1rem; margin-bottom: 10px; }
+
+        /* --- 10. WHY US (Dark Galaxy) --- */
+        #why-us {
+            background: #0f0f0f; /* Slightly lighter than home for variance */
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        #why-us h2, #why-us p, #why-us h3 { color: var(--white); }
+        #why-us p { color: var(--mid-grey); }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
+            width: 100%;
+            max-width: 1000px;
+            z-index: 2;
+        }
+
+        /* --- 11. CONTACT SECTION (Light) --- */
+        #contact {
+            background-color: var(--white);
+            color: var(--black);
+        }
+        #contact h2 { color: var(--black); }
+
+        .contact-form {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-bottom: 1px solid var(--light-grey);
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-bottom: 1px solid var(--black);
+        }
+
+        button.submit-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 18px;
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        button.submit-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--black);
+            color: var(--mid-grey);
+            padding: 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            h1 { font-size: 2.5rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">Datannotix<span>.</span></div>
+        <nav>
+            <ul>
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#process" class="nav-link">Process</a></li>
+                <li><a href="#why-us" class="nav-link">Why Us</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Home Section (Dark with Galaxy Stars) -->
+    <section id="home">
+        <!-- Minimalist Star Animation Background -->
+        <div class="galaxy-bg">
+            <div class="stars"></div>
+            <div class="stars2"></div>
+        </div>
+
+        <div style="z-index: 2; position: relative;">
+            <h1>Precision Data Labeling<br>Defined.</h1>
+            <p>Accelerate your machine learning models with pixel-perfect annotations.<br>High speed. High accuracy. Absolute clarity.</p>
+            <a href="#contact" class="btn">Initialize Project</a>
+        </div>
+    </section>
+
+    <!-- About Section (Light) -->
+    <section id="about">
+        <h2>About Datannotix</h2>
+        <p>Bridging the gap between raw data and intelligent algorithms.</p>
+        <p>Our mission is absolute precision. In a world of noise, we provide the signal. We combine advanced tooling with human-in-the-loop verification to ensure every bounding box, polygon, and text label is mathematically perfect. Clean. Simple. Accurate.</p>
+    </section>
+
+    <!-- Services Section (Light Grey with Micro-Animations) -->
+    <section id="services">
+        <h2>Our Services</h2>
+        <p>Tailored solutions for Computer Vision and NLP.</p>
+        
+        <div class="cards-container">
+            <!-- Service 1: Computer Vision -->
+            <div class="card">
+                <div class="anim-box">
+                    <div class="cv-box"></div> <!-- Bounding Box Animation -->
+                </div>
+                <h3>Computer Vision</h3>
+                <p>Flawless object detection. We handle 2D/3D Bounding Boxes and Polygons with pixel-level accuracy.</p>
+            </div>
+
+            <!-- Service 2: NLP -->
+            <div class="card">
+                <div class="anim-box">
+                    <div class="nlp-text">Hello World...</div> <!-- Typing Animation -->
+                </div>
+                <h3>NLP Annotation</h3>
+                <p>Context-aware language models. Expert Sentiment Analysis and NER categorization.</p>
+            </div>
+
+            <!-- Service 3: Audio -->
+            <div class="card">
+                <div class="anim-box">
+                    <div class="audio-wave">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div> <!-- Waveform Animation -->
+                </div>
+                <h3>Audio & Speech</h3>
+                <p>Seamless transcription and audio event classification for dynamic perception models.</p>
+            </div>
+
+            <!-- Service 4: LiDAR -->
+            <div class="card">
+                <div class="anim-box">
+                    <div class="lidar-ring"></div> <!-- 3D Rotation Animation -->
+                </div>
+                <h3>LiDAR & 3D</h3>
+                <p>Precise spatial awareness. Point cloud annotation for robotics requiring depth perception.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section (Light) -->
+    <section id="process">
+        <h2>How It Works</h2>
+        <p>A transparent workflow designed for speed and trust.</p>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>Consult</h3>
+                <p>Defining guidelines.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">02</div>
+                <h3>Calibrate</h3>
+                <p>Sample batch alignment.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">03</div>
+                <h3>Scale</h3>
+                <p>High throughput labeling.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">04</div>
+                <h3>Deliver</h3>
+                <p>Secure data handoff.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section (Dark Galaxy) -->
+    <section id="why-us">
+        <!-- Star Animation Reuse -->
+        <div class="galaxy-bg">
+            <div class="stars"></div>
+        </div>
+
+        <h2>Why Datannotix?</h2>
+        <p>We are not just a workforce; we are your data partners.</p>
+        
+        <div class="feature-grid">
+            <div class="feature">
+                <h3>99.9% Quality</h3>
+                <p>Consensus mechanism where multiple annotators review assets to ensure statistical accuracy.</p>
+            </div>
+            <div class="feature">
+                <h3>Domain Experts</h3>
+                <p>We employ specialists with relevant degrees, ensuring context is never lost in translation.</p>
+            </div>
+            <div class="feature">
+                <h3>Secure</h3>
+                <p>SOC2 compliant environments and strict NDA protocols protect your proprietary datasets.</p>
+            </div>
+            <div class="feature">
+                <h3>Agile</h3>
+                <p>We integrate directly with your API or use our proprietary platform. We adapt to you.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2>Get In Touch</h2>
+        <p>Ready to improve your model performance?</p>
+        
+        <div class="contact-form">
+            <form onsubmit="event.preventDefault(); alert('Request Sent!');">
+                <div class="form-group">
+                    <input type="text" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea rows="4" placeholder="Project Details" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+            <div style="margin-top: 30px; text-align: center; color: var(--mid-grey);">
+                <p>hello@datannotix.com</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Datannotix. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Scroll Highlighting -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sections = document.querySelectorAll("section");
+            const navLinks = document.querySelectorAll(".nav-link");
+
+            const observerOptions = {
+                root: null,
+                threshold: 0.3, 
+                rootMargin: "-80px 0px 0px 0px" 
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const currentId = entry.target.getAttribute("id");
+                        navLinks.forEach((link) => {
+                            link.classList.remove("active");
+                            if (link.getAttribute("href") === `#${currentId}`) {
+                                link.classList.add("active");
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
